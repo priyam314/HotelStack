@@ -13,13 +13,21 @@ import (
 
 func main(){
 	var app config.AppConfig
-	t, err := render.CreateTemplateCache()
+	tc, err := render.CreateTemplateCache()
 	if err!=nil{
-		log.Fatal("cannot create template")
+		log.Fatal("cannot create template cache")
 	}
-	app.AppCache = t
-	http.HandleFunc("/",handler.Home)
-	http.HandleFunc("/about",handler.About)
+
+	app.AppCache = tc
+	app.UseCache = false
+	
+	repo := handler.NewRepo(&app)
+	handler.NewHandlers(repo)
+
+	render.NewTemplates(&app)
+
+	http.HandleFunc("/",handler.Repo.Home)
+	http.HandleFunc("/about",handler.Repo.About)
 	http.ListenAndServe(":8080",nil)
 }
 // now you need to do go run cmd/web/*.go

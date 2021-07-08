@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"log"
 	"bytes"
+	"github.com/priyam314/HotelStack/learnTemplates/pkg/config"
 )
 
 // Whole Story
@@ -36,18 +37,26 @@ import (
 var function = template.FuncMap{
 
 }
+var app *config.AppConfig
+
+func NewTemplates(a *config.AppConfig){
+	app = a
+}
 // it can render a template, as argment it takes ResponseWriter and tmpl file
 // template.ParsedFiles parses the file
 // parsedTemplate.Execute executes it and as an output it returns err
 func RenderTemplate(w http.ResponseWriter, tmpl string){
 
-	tc, err := CreateTemplateCache()
-	if err!=nil{
-		log.Fatal(err)
+	var tc map[string]*template.Template
+
+	if app.UseCache{
+		tc = app.AppCache
+	}else{
+		tc, _ = CreateTemplateCache()
 	}
 	t, ok := tc[tmpl]
 	if !ok{
-		log.Fatal(err)
+		log.Fatal("Could not get template from template cache")
 	}
 
 	// Initiating a buffer
@@ -59,7 +68,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string){
 	_ = t.Execute(buf, nil)
 
 	// WriteTo writes data to w until the buffer is drained or an error occurs
-	_, err = buf.WriteTo(w)
+	_, err := buf.WriteTo(w)
 	if err!=nil{
 		fmt.Println("error writing template to browser",err)
 	}
