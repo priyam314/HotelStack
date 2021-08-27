@@ -8,11 +8,12 @@ import (
 	"log"
 	"bytes"
 	"github.com/priyam314/HotelStack/learnTemplates/pkg/config"
+	"github.com/priyam314/HotelStack/learnTemplates/pkg/models"
 )
 
 // Whole Story
-// CreateTemplateCache() create templates and savve it in cache
-// CreateTamplateCache()
+// CreateTemplateCache() create templates and save it in cache
+// CreateTemplateCache()
 // ...1) save all *.page.tmpl in a variable
 // ...2) looping over every page
 // ......1) find the name of file
@@ -42,10 +43,14 @@ var app *config.AppConfig
 func NewTemplates(a *config.AppConfig){
 	app = a
 }
+
+func AddDefaultData(td *models.TemplateData) *models.TemplateData{
+	return td
+}
 // it can render a template, as argment it takes ResponseWriter and tmpl file
 // template.ParsedFiles parses the file
 // parsedTemplate.Execute executes it and as an output it returns err
-func RenderTemplate(w http.ResponseWriter, tmpl string){
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData){
 
 	var tc map[string]*template.Template
 
@@ -62,10 +67,12 @@ func RenderTemplate(w http.ResponseWriter, tmpl string){
 	// Initiating a buffer
 	buf := new(bytes.Buffer)
 
+	td = AddDefaultData(td)
+
 	// its actually like *template.Template.Execute
 	// Execute applies a parsed template to the specified data objet, and 
 	// writes the output to w io.Writer, here to buf
-	_ = t.Execute(buf, nil)
+	_ = t.Execute(buf, td)
 
 	// WriteTo writes data to w until the buffer is drained or an error occurs
 	_, err := buf.WriteTo(w)

@@ -4,8 +4,10 @@ import (
 	"net/http"
 	"github.com/priyam314/HotelStack/learnTemplates/pkg/render"
 	"github.com/priyam314/HotelStack/learnTemplates/pkg/config"
+	"github.com/priyam314/HotelStack/learnTemplates/pkg/models"
 )
 // we can directly render tamplate for a partivular page
+
 
 var Repo *Repository
 
@@ -21,8 +23,13 @@ func NewHandlers(r *Repository){
 	Repo = r
 }
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request){
-	render.RenderTemplate(w,"home.page.tmpl")
+	render.RenderTemplate(w,"home.page.tmpl", &models.TemplateData{})
 }
 func (m *Repository) About(w http.ResponseWriter, r *http.Request){
-	render.RenderTemplate(w,"about.page.tmpl")
+	// business logic
+	stringMap := make(map[string]string)
+	stringMap["test"] = "Hello, again"
+	render.RenderTemplate(w,"about.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
