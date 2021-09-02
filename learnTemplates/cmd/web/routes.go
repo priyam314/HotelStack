@@ -35,6 +35,8 @@ func routes(app *config.AppConfig) http.Handler{
 	// gracefully absorbs panics and prints the stackstrace
 	mux.Use(middleware.Recoverer)
 	mux.Use(WriteToConsole)
+	mux.Use(NoSurf)
+	mux.Use(SessionLoad)
 	mux.Get("/", handler.Repo.Home)
 	mux.Get("/about",handler.Repo.About)
 

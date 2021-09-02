@@ -6,13 +6,33 @@ import (
 	"github.com/priyam314/HotelStack/learnTemplates/pkg/handler"
 	"github.com/priyam314/HotelStack/learnTemplates/pkg/config"
 	"github.com/priyam314/HotelStack/learnTemplates/pkg/render"
+	"github.com/alexedwards/scs/v2"
+	"time"
 )
 // here you have used handler.Home not handlers.Home because handler 
 // files is handler package now, and all functions, methods are globally
 // defined to be used across handler. so you go to root, and used function
 
+// now its available in package
+var app config.AppConfig
+var sessions *scs.SessionManager
+
 func main(){
-	var app config.AppConfig
+	// change this to true, when in production
+	app.InProduction = false
+
+	sessions = scs.New()
+	sessions.Lifetime = 24*time.Hour
+	// if you want to forget the cookies once someone closes the window, 
+	// set to false
+	sessions.Cookie.Persist = true
+	// how strict you wanna be to what site cookie applies to
+	sessions.Cookie.SameSite = http.SameSiteLaxMode
+	// if you want to secure your cookie, then do true
+	// we did false, because we use localhost, it ain't secure
+	sessions.Cookie.Secure = app.InProduction
+
+	app.Session = sessions
 	tc, err := render.CreateTemplateCache()
 	if err!=nil{
 		log.Fatal("cannot create template cache")

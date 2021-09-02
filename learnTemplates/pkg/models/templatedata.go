@@ -18,7 +18,7 @@ type TemplateData struct{
 	// page there is a form on it, hidden field in that form which contains 
 	// long random sequence of numbers, it changes everytime when you go o it
 	// it seems like suitable place of middleware
-	CSRFToken   String
+	CSRFToken   string
 	Flash 		string
 	Warning		string
 	Error       string
