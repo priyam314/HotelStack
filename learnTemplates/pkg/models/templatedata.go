@@ -14,7 +14,11 @@ type TemplateData struct{
 	IntMap 		map[string]int
 	FloatMap 	map[string]float32
 	Data 		map[string]interface{}
-	CSRFToken   string
+	// cross site request forgery token, it nothig more but when you build a web
+	// page there is a form on it, hidden field in that form which contains 
+	// long random sequence of numbers, it changes everytime when you go o it
+	// it seems like suitable place of middleware
+	CSRFToken   String
 	Flash 		string
 	Warning		string
 	Error       string
